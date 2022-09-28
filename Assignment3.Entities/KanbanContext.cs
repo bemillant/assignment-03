@@ -8,6 +8,7 @@ public class KanbanContext : DbContext
 
     public DbSet<Tag> Tags => Set<Tag>();
     public DbSet<Task> Tasks => Set<Task>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
