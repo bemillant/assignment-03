@@ -11,7 +11,7 @@ public class TagRepository : ITagRepository
 
     public (Response Response, int TagId) Create(TagCreateDTO tag)
     {
-        var entity = context.Tags.FirstOrDefault(c => c.name == tag.Name);
+        var entity = context.Tags.FirstOrDefault(c => c.Name == tag.Name);
         Response response;
 
         if (entity is null)
@@ -28,17 +28,17 @@ public class TagRepository : ITagRepository
             response = Response.Conflict;
         }
 
-        return (response, entity.id);
+        return (response, entity.Id);
     }
 
     public Response Delete(int tagId, bool force = false)
     {
-        var entity = context.Tags.FirstOrDefault(c => c.id == tagId);
+        var entity = context.Tags.FirstOrDefault(c => c.Id == tagId);
         Response response;
 
         if (entity is not null)
         {
-            if (entity.tasks is not null)
+            if (entity.Tasks is not null)
             {
                 if (!force)
                 {
@@ -69,8 +69,8 @@ public class TagRepository : ITagRepository
     public TagDTO Read(int tagId)
     {
         var tags = from t in context.Tags
-            where t.id == tagId
-            select new TagDTO(t.id, t.name);
+            where t.Id == tagId
+            select new TagDTO(t.Id, t.Name);
 
         return tags.FirstOrDefault();
     }
@@ -78,7 +78,7 @@ public class TagRepository : ITagRepository
     public IReadOnlyCollection<TagDTO> ReadAll()
     {
         var tags = from t in context.Tags
-            select new TagDTO(t.id, t.name);
+            select new TagDTO(t.Id, t.Name);
 
         return tags.ToList();
     }
@@ -93,13 +93,13 @@ public class TagRepository : ITagRepository
             response = Response.NotFound;
         }
         //if two tags exists with the same name but different ids
-        else if (context.Tags.FirstOrDefault(t => t.id != tag.Id && t.name == tag.Name) != null)
+        else if (context.Tags.FirstOrDefault(t => t.Id != tag.Id && t.Name == tag.Name) != null)
         {
             response = Response.Conflict;
         }
         else
         {
-            entity.name = tag.Name;
+            entity.Name = tag.Name;
             context.SaveChanges();
             response = Response.Updated;
         }

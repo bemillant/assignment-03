@@ -18,7 +18,7 @@ public class TagRepositoryTests : IDisposable
         var context = new KanbanContext(builder.Options);
         context.Database.EnsureCreated();
 
-        context.Tags.AddRange(new Tag("Cleaning") {id = 1}, new Tag("Urgent") {id = 2}, new Tag("TBD") {id = 3});
+        context.Tags.AddRange(new Tag("Cleaning") {Id = 1}, new Tag("Urgent") {Id = 2}, new Tag("TBD") {Id = 3});
         context.SaveChanges();
 
         this.context = context;
@@ -71,10 +71,10 @@ public class TagRepositoryTests : IDisposable
     [Fact]
     public void Delete_tag_in_use_without_using_force_should_give_conflict()
     {
-        var task1 = new Task {title = "Clean Office", id = 1, state = (enumState) State.Active};
-        var task2 = new Task {title = "Do Taxes", id = 2, state = (enumState) State.New};
+        var task1 = new Task {Title = "Clean Office", Id = 1, State = (EnumState) State.Active};
+        var task2 = new Task {Title = "Do Taxes", Id = 2, State = (EnumState) State.New};
         var list = new List<Task> {task1, task2};
-        context.Tags.Find(1)!.tasks = list;
+        context.Tags.Find(1)!.Tasks = list;
 
         var response = tagRep.Delete(1);
         response.Should().Be(Response.Conflict);
@@ -110,6 +110,6 @@ public class TagRepositoryTests : IDisposable
         response.Should().Be(Response.Updated);
 
         var entity = context.Tags.Find(1)!;
-        entity.name.Should().Be("Office work");
+        entity.Name.Should().Be("Office work");
     }
 }

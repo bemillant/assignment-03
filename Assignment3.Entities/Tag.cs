@@ -6,12 +6,12 @@ public class Tag
 {
     public Tag(string name)
     {
-        this.name = name;
+        Name = name;
     }
 
-    [Key] public int id { get; set; }
+    [Key] public int Id { get; set; }
 
-    [Required] [StringLength(50)] public string name { get; set; }
+    [Required] [StringLength(50)] public string Name { get; set; }
 
-    public ICollection<Task>? tasks { get; set; }
+    public ICollection<Task> Tasks { get; set; }
 }
