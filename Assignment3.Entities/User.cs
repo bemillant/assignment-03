@@ -15,4 +15,10 @@ public class User
     public string? email { get; set; }
     public ICollection<Task>? tasks { get; set; }
 
+    public User(string name)
+    {
+        this.name = name;
+    }
+
+
 }

@@ -27,6 +27,9 @@ public class Task
     public enumState state { get; set; }
     public ICollection<Tag>? tags { get; set; }
 
-
+    public Task(string title)
+    {
+        this.title = title;
+    }
 
 }
