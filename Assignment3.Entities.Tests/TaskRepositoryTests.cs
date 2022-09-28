@@ -30,7 +30,7 @@ public class TaskRepositoryTests : IDisposable
         var task3 = new Task() { Title = "Go For A Run", Id = 3, State = State.Resolved };
         context.Tasks.AddRange(task1, task2, task3);
 
-        var user1 = new User("Brian") { Id = 1, Email = "br@itu.dk" };
+        var user1 = new User {Name = "Brian", Id = 1, Email = "br@itu.dk" };
         context.Users.Add(user1);
 
         context.SaveChanges();
@@ -40,10 +40,35 @@ public class TaskRepositoryTests : IDisposable
 
     }
 
+    [Fact]
+    public void Create_should_set_New_Created_and_StateUpdated()
+    {
+        var now = DateTime.UtcNow;
+        var (response, taskId) = taskRep.Create(new TaskCreateDTO("test", 1, "test", ArraySegment<string>.Empty));
 
-    //DO NOT KNOW HOW TO TEST THE THING WITH THE TIME
-    //SEE 2.4 AND 2.6
+        response.Should().Be(Response.Created);
 
+        var task = taskRep.Read(taskId);
+
+        task.State.Should().Be(State.New);
+        task.Created.Should().BeCloseTo(now, precision: TimeSpan.FromSeconds(5));
+        task.StateUpdated.Should().BeCloseTo(now, precision: TimeSpan.FromSeconds(5));
+    }
+
+    [Fact]
+    public void Update_state_sets_StateUpdated()
+    {
+        var now = DateTime.UtcNow;
+        var taskId = 1;
+
+        var response =
+            taskRep.Update(new TaskUpdateDTO(taskId, "test", 1, "test", ArraySegment<string>.Empty, State.Closed));
+
+        response.Should().Be(Response.Updated);
+
+        var task = taskRep.Read(taskId);
+        task.StateUpdated.Should().BeCloseTo(now, precision: TimeSpan.FromSeconds(5));
+    }
 
     [Fact]
     public void Create_task_should_return_Created()
