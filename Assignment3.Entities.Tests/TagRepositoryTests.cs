@@ -71,8 +71,8 @@ public class TagRepositoryTests : IDisposable
     [Fact]
     public void Delete_tag_in_use_without_using_force_should_give_conflict()
     {
-        var task1 = new Task("Clean Office") {id = 1, state = (enumState) State.Active};
-        var task2 = new Task("Do Taxes") {id = 2, state = (enumState) State.New};
+        var task1 = new Task {title = "Clean Office", id = 1, state = (enumState) State.Active};
+        var task2 = new Task {title = "Do Taxes", id = 2, state = (enumState) State.New};
         var list = new List<Task> {task1, task2};
         context.Tags.Find(1)!.tasks = list;
 
