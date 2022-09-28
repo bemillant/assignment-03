@@ -16,5 +16,5 @@ public class Task
 
     [Required] public State State { get; set; }
 
-    public ICollection<Tag> Tags { get; set; }
+    public ICollection<Tag>? Tags { get; set; }
 }

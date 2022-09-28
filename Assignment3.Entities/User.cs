@@ -10,5 +10,5 @@ public class User
 
     [Required][StringLength(100)] public string Email { get; set; }
 
-    public ICollection<Task> Tasks { get; set; }
+    public ICollection<Task>? Tasks { get; set; }
 }
