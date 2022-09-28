@@ -1,4 +1,4 @@
-namespace Assignment.Core;
+namespace Assignment3.Core;
 
 public record TagDTO(int Id, string Name);
 

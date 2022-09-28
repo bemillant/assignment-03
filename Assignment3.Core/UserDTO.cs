@@ -1,4 +1,4 @@
-namespace Assignment.Core;
+namespace Assignment3.Core;
 
 public record UserDTO(int Id, string Name, string Email);
 

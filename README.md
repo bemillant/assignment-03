@@ -16,7 +16,7 @@ You are required to implement a model using Entity Framework Core for a simple k
 
 1. Implement the following entities (*POCOs*) in the `Entities` project.
 
-    - WorkItem
+    - Task
         - Id : int
         - Title : string(100), required
         - AssignedTo : optional reference to *User* entity
@@ -27,19 +27,19 @@ You are required to implement a model using Entity Framework Core for a simple k
         - Id : int
         - Name : string(100), required
         - Email : string(100), required, unique
-        - WorkItems : list of *WorkItem* entities belonging to *User*
+        - Tasks : list of *Task* entities belonging to *User*
     - Tag
         - Id : int
         - Name : string(50), required, unique
-        - WorkItems : many-to-many reference to *WorkItem* entity
+        - Tasks : many-to-many reference to *Task* entity
 
-1. Ensure that the `State` property of the `WorkItem` entity is stored as a `string`. See: <https://docs.microsoft.com/en-us/ef/core/modeling/value-conversions>.
+1. Ensure that the `State` property of the `Task` entity is stored as a `string`. See: <https://docs.microsoft.com/en-us/ef/core/modeling/value-conversions>.
 
 1. Implement the `KanbanContext` required for the model above in the `Entities` project.
 
 1. Implement and test the `ITagRepository` *and/or* the `IUserRepository` using the classes in the `Entities` project
 
-1. Implement and test the `IWorkItemRepository` interface in the `Core` project using the `WorkItemRepository` class in the `Entities` project.
+1. Implement and test the `ITaskRepository` interface in the `Core` project using the `TaskRepository` class in the `Entities` project.
 
 ### Business Rules
 
@@ -49,28 +49,28 @@ You are required to implement a model using Entity Framework Core for a simple k
 1. *Create*, *Read*, and *Update* should return a proper `Response`.
 1. Your are not allowed to write `throw new ...` - use the `Response` instead.
 1. Your code must use an in-memory database for testing.
-1. If a workItem, tag, or user is not found, return `null`.
+1. If a task, tag, or user is not found, return `null`.
 
-#### 2. WorkItem Repository
+#### 2. Task Repository
 
-1. Only work items with the state `New` can be deleted from the database.
-1. Deleting a workItem which is `Active` should set its state to `Removed`.
-1. Deleting a workItem which is `Resolved`, `Closed`, or `Removed` should return `Conflict`.
-1. Creating a workItem will set its state to `New` and `Created`/`StateUpdated` to current time in UTC.
-1. Create/update workItem must allow for editing tags.
-1. Updating the `State` of a workItem will change the `StateUpdated` to current time in UTC.
+1. Only tasks with the state `New` can be deleted from the database.
+1. Deleting a task which is `Active` should set its state to `Removed`.
+1. Deleting a task which is `Resolved`, `Closed`, or `Removed` should return `Conflict`.
+1. Creating a task will set its state to `New` and `Created`/`StateUpdated` to current time in UTC.
+1. Create/update task must allow for editing tags.
+1. Updating the `State` of a task will change the `StateUpdated` to current time in UTC.
 1. Assigning a user which does not exist should return `BadRequest`.
-1. WorkItemRepository may *not* depend on *TagRepository* or *UserRepository*.
+1. TaskRepository may *not* depend on *TagRepository* or *UserRepository*.
 
 #### 3. Tag Repository
 
-1. Tags which are assigned to a workItem may only be deleted using the `force`.
+1. Tags which are assigned to a task may only be deleted using the `force`.
 1. Trying to delete a tag in use without the `force` should return `Conflict`.
 1. Trying to create a tag which exists already should return `Conflict`.
 
 #### 4. User Repository
 
-1. Users who are assigned to a workItem may only be deleted using the `force`.
+1. Users who are assigned to a task may only be deleted using the `force`.
 1. Trying to delete a user in use without the `force` should return `Conflict`.
 1. Trying to create a user which exists already (same email) should return `Conflict`.
 
@@ -108,7 +108,7 @@ In the following exercises, whenever you are asked to draw a UML diagram do that
 Draw a UML class diagram that models the following specifications:
 
   * A project has a name, a start date, and an end date.
-  * A project is associated to a project manager with a name, a telephone, and a team.
+  * A project is associated to a project manager, a name, a telephone, and a team.
   * A project manager manages (by starting and terminating) a project and leads a team that is associated with a project.
   * Projects receive as input requirements and produce a system. Both requirements and the system have a completion percentage and a description.
   * Each team is composed by developers.
@@ -158,7 +158,7 @@ To submit the assignment you need to create a PDF document using LaTeX that cont
 
 **Note**: You should not send a PR with your changes.
 
-The PDF file must conform to the following naming convention: `group_<x>_<id1>_<id2>_<id3>_assignment_03.pdf`, where `<x>` is replaced by the number of your group from [README_GROUPS.md](./README_GROUPS.md) and `<id1>`, `<id2>`, and `<id3>` are your respective ITU identifiers.
+The PDF file must conform to the following naming convention: `group_<x>_<id1>_<id2>_<id3>_assignment_03.pdf`, where `<x>` is replaced by the number of your group from [README_GROUPS.md](./README_GROUPS.md) and `<id1>`, `<id2>`, and `<id3>` are your respective ITU identifiers. 
 
 You submit via [LearnIT](https://learnit.itu.dk/mod/assign/view.php?id=165090).
 
