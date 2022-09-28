@@ -84,6 +84,12 @@ public class UserRepositoryTests
     {
         _userRepository.Update(new UserUpdateDTO(0, "test", "test")).Should().Be(Response.NotFound);
     }
+    
+    [Fact]
+    public void Update_conflict()
+    {
+        _userRepository.Update(new UserUpdateDTO(0, "test", "jouj")).Should().Be(Response.Conflict);
+    }
 
     [Fact]
     public void Delete()
