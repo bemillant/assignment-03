@@ -16,7 +16,7 @@ public class TagRepository : ITagRepository
 
         if (entity is null)
         {
-            entity = new Tag(tag.Name);
+            entity = new Tag {Name = tag.Name};
 
             context.Tags.Add(entity);
             context.SaveChanges();

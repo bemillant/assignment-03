@@ -17,7 +17,7 @@ public class KanbanContext : DbContext
             .Property(e => e.State)
             .HasConversion(
                 s => s.ToString(),
-                s => (EnumState) Enum.Parse(typeof(EnumState), s));
+                s => (State) Enum.Parse(typeof(State), s));
 
         //Making title required and setting length to be max 100
         modelBuilder.Entity<Task>()
