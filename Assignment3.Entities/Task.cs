@@ -16,8 +16,7 @@ public class Task
 
     [Key]
     public int id { get; set; }
-    [Required]
-    [StringLength(100)]
+    [Required, StringLength(100)]
     public string? title { get; set; }
     public User? assignedTo { get; set; }
 
