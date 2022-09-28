@@ -11,12 +11,12 @@ public class TaskRepository : ITaskRepository
 
     public (Response Response, int TaskId) Create(TaskCreateDTO task)
     {
-        var entity = context.Tasks.FirstOrDefault(c => c.title == task.Title);
+        var entity = context.Tasks.FirstOrDefault(c => c.Title == task.Title);
         Response response;
 
         if (entity is null)
         {
-            entity = new Task(task.Title) { state = enumState.NEW };
+            entity = new Task { Title = task.Title, State = State.New };
 
             context.Tasks.Add(entity);
             context.SaveChanges();
@@ -27,30 +27,30 @@ public class TaskRepository : ITaskRepository
         {
             response = Response.Conflict;
         }
-        return (response, entity.id);
+        return (response, entity.Id);
     }
 
     public Response Delete(int taskId)
     {
-        var entity = context.Tasks.FirstOrDefault(c => c.id == taskId);
+        var entity = context.Tasks.FirstOrDefault(c => c.Id == taskId);
         //Need to do this here? But only in this method?
         Response res = new Response();
 
         if (entity is not null)
         {
-            if (entity.state.Equals(enumState.ACTIVE))
+            if (entity.State.Equals(State.Active))
             {
-                entity.state = enumState.REMOVED;
+                entity.State = State.Removed;
                 context.SaveChanges();
 
                 //Should set response to what? Delete?
                 res = Response.Deleted;
             }
-            else if (entity.state.Equals(enumState.RESOLVED) || entity.state.Equals(enumState.CLOSED) || entity.state.Equals(enumState.REMOVED))
+            else if (entity.State.Equals(State.Resolved) || entity.State.Equals(State.Closed) || entity.State.Equals(State.Removed))
             {
                 res = Response.Conflict;
             }
-            else if (entity.state.Equals(enumState.NEW))
+            else if (entity.State.Equals(State.New))
             {
                 context.Tasks.Remove(entity);
                 context.SaveChanges();
@@ -74,7 +74,7 @@ public class TaskRepository : ITaskRepository
         throw new NotImplementedException();
     }
 
-    public IReadOnlyCollection<TaskDTO> ReadAllByState(State state)
+    public IReadOnlyCollection<TaskDTO> ReadAllByState(State State)
     {
         throw new NotImplementedException();
     }
@@ -104,7 +104,7 @@ public class TaskRepository : ITaskRepository
             response = Response.NotFound;
         }
         //if two tasks exists with the same titles but different ids
-        else if (context.Tasks.FirstOrDefault(t => t.id != task.Id && t.title == task.Title) != null)
+        else if (context.Tasks.FirstOrDefault(t => t.Id != task.Id && t.Title == task.Title) != null)
         {
             response = Response.Conflict;
         }
@@ -114,31 +114,27 @@ public class TaskRepository : ITaskRepository
         }
         else
         {
-            entity.assignedTo = task.AssignedToId is not null ? context.Users.Find(task.AssignedToId) : entity.assignedTo;
-            entity.description = task.Description is not null ? task.Description : entity.description;
+            entity.AssignedTo = task.AssignedToId is not null ? context.Users.Find(task.AssignedToId) : entity.AssignedTo;
+            entity.Description = task.Description is not null ? task.Description : entity.Description;
 
 
             if (task.Tags is not null)
             {
-                entity.tags = new List<Tag>();
+                entity.Tags = new List<Tag>();
                 foreach (var tag in task.Tags!)
                 {
                     foreach (var conTag in context.Tags)
                     {
-                        if (conTag.name == tag)
+                        if (conTag.Name == tag)
                         {
-                            entity.tags.Add(context.Tags.Find(conTag.id));
+                            entity.Tags.Add(context.Tags.Find(conTag.Id));
                         }
                     }
                 }
-                Console.WriteLine(entity.tags.First());
-                Console.WriteLine(entity.tags.Last());
-                Console.WriteLine(entity.tags);
-                Console.WriteLine(entity.tags);
             }
 
-            entity.state = (enumState)task.State;
-            entity.title = task.Title;
+            entity.State = task.State;
+            entity.Title = task.Title;
             context.SaveChanges();
             response = Response.Updated;
         }

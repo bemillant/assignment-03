@@ -1,32 +1,25 @@
-using Assignment3.Core;
-
-
-
-
-
 namespace Assignment3.Entities;
 
 public class TagRepository : ITagRepository
 {
-
-    private readonly KanbanContext context;
+    private readonly KanbanContext _context;
 
     public TagRepository(KanbanContext context)
     {
-        this.context = context;
+        _context = context;
     }
 
     public (Response Response, int TagId) Create(TagCreateDTO tag)
     {
-        var entity = context.Tags.FirstOrDefault(c => c.name == tag.Name);
+        var entity = _context.Tags.FirstOrDefault(c => c.Name == tag.Name);
         Response response;
 
         if (entity is null)
         {
-            entity = new Tag(tag.Name);
+            entity = new Tag { Name = tag.Name };
 
-            context.Tags.Add(entity);
-            context.SaveChanges();
+            _context.Tags.Add(entity);
+            _context.SaveChanges();
 
             response = Response.Created;
         }
@@ -34,17 +27,18 @@ public class TagRepository : ITagRepository
         {
             response = Response.Conflict;
         }
-        return (response, entity.id);
+
+        return (response, entity.Id);
     }
 
     public Response Delete(int tagId, bool force = false)
     {
-        var entity = context.Tags.FirstOrDefault(c => c.id == tagId);
+        var entity = _context.Tags.FirstOrDefault(c => c.Id == tagId);
         Response response;
 
         if (entity is not null)
         {
-            if (entity.tasks is not null)
+            if (entity.Tasks is not null)
             {
                 if (!force)
                 {
@@ -52,15 +46,15 @@ public class TagRepository : ITagRepository
                 }
                 else
                 {
-                    context.Tags.Remove(entity);
-                    context.SaveChanges();
+                    _context.Tags.Remove(entity);
+                    _context.SaveChanges();
                     response = Response.Deleted;
                 }
             }
             else
             {
-                context.Tags.Remove(entity);
-                context.SaveChanges();
+                _context.Tags.Remove(entity);
+                _context.SaveChanges();
                 response = Response.Deleted;
             }
         }
@@ -74,24 +68,24 @@ public class TagRepository : ITagRepository
 
     public TagDTO Read(int tagId)
     {
-        var tags = from t in context.Tags
-                   where t.id == tagId
-                   select new TagDTO(t.id, t.name);
+        var tags = from t in _context.Tags
+                   where t.Id == tagId
+                   select new TagDTO(t.Id, t.Name);
 
         return tags.FirstOrDefault();
     }
 
     public IReadOnlyCollection<TagDTO> ReadAll()
     {
-        var tags = from t in context.Tags
-                   select new TagDTO(t.id, t.name);
+        var tags = from t in _context.Tags
+                   select new TagDTO(t.Id, t.Name);
 
         return tags.ToList();
     }
 
     public Response Update(TagUpdateDTO tag)
     {
-        var entity = context.Tags.Find(tag.Id);
+        var entity = _context.Tags.Find(tag.Id);
         Response response;
 
         if (entity is null)
@@ -99,18 +93,17 @@ public class TagRepository : ITagRepository
             response = Response.NotFound;
         }
         //if two tags exists with the same name but different ids
-        else if (context.Tags.FirstOrDefault(t => t.id != tag.Id && t.name == tag.Name) != null)
+        else if (_context.Tags.FirstOrDefault(t => t.Id != tag.Id && t.Name == tag.Name) != null)
         {
             response = Response.Conflict;
         }
         else
         {
-            entity.name = tag.Name;
-            context.SaveChanges();
+            entity.Name = tag.Name;
+            _context.SaveChanges();
             response = Response.Updated;
         }
 
         return response;
-
     }
 }

@@ -1,35 +1,20 @@
-namespace Assignment3.Entities;
 using System.ComponentModel.DataAnnotations;
 
-
-public enum enumState
-{
-    NEW,
-    ACTIVE,
-    RESOLVED,
-    CLOSED,
-    REMOVED
-}
+namespace Assignment3.Entities;
 
 public class Task
 {
+    [Key] public int Id { get; set; }
 
-    [Key]
-    public int id { get; set; }
-    [Required, StringLength(100)]
-    public string? title { get; set; }
-    public User? assignedTo { get; set; }
+    [Required][StringLength(100)] public string? Title { get; set; }
 
-    [StringLength(int.MaxValue)]
-    public string? description { get; set; }
+    public User? AssignedTo { get; set; }
 
-    [Required]
-    public enumState state { get; set; }
-    public ICollection<Tag>? tags { get; set; }
+    public string? Description { get; set; }
 
-    public Task(string title)
-    {
-        this.title = title;
-    }
 
+
+    [Required] public State State { get; set; }
+
+    public ICollection<Tag> Tags { get; set; }
 }

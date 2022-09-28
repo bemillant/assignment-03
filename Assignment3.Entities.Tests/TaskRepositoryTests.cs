@@ -19,18 +19,18 @@ public class TaskRepositoryTests : IDisposable
 
 
         //Tags
-        var cleaning = new Tag("Cleaning") { id = 1 };
-        var urgent = new Tag("Urgent") { id = 2 };
-        var TBD = new Tag("TBD") { id = 3 };
+        var cleaning = new Tag() { Name = "Cleaning", Id = 1 };
+        var urgent = new Tag() { Name = "Urgent", Id = 2 };
+        var TBD = new Tag() { Name = "TBD", Id = 3 };
         context.Tags.AddRange(cleaning, urgent, TBD);
 
         //Tasks
-        var task1 = new Task("Clean Office") { id = 1, state = enumState.ACTIVE };
-        var task2 = new Task("Do Taxes") { id = 2, state = enumState.NEW };
-        var task3 = new Task("Go For A Run") { id = 3, state = enumState.RESOLVED };
+        var task1 = new Task() { Title = "Clean Office", Id = 1, State = State.Active };
+        var task2 = new Task() { Title = "Do Taxes", Id = 2, State = State.New };
+        var task3 = new Task() { Title = "Go For A Run", Id = 3, State = State.Resolved };
         context.Tasks.AddRange(task1, task2, task3);
 
-        var user1 = new User("Brian") { id = 1, email = "br@itu.dk" };
+        var user1 = new User("Brian") { Id = 1, Email = "br@itu.dk" };
         context.Users.Add(user1);
 
         context.SaveChanges();
@@ -71,7 +71,7 @@ public class TaskRepositoryTests : IDisposable
     public void Delete_task_that_is_active_should_return_state_removed()
     {
         var response = taskRep.Delete(1);
-        context.Tasks.Find(1).state.Should().Be(enumState.REMOVED);
+        context.Tasks.Find(1).State.Should().Be(State.Removed);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class TaskRepositoryTests : IDisposable
     {
         var response = taskRep.Delete(3);
         response.Should().Be(Response.Conflict);
-        context.Tasks.Find(3).state.Should().Be(enumState.RESOLVED);
+        context.Tasks.Find(3).State.Should().Be(State.Resolved);
     }
 
     [Fact]
@@ -87,8 +87,8 @@ public class TaskRepositoryTests : IDisposable
     {
 
         var list = new List<string> { "Urgent", "TBD" };
-        var urgent = new Tag("Urgent") { id = 2 };
-        var TBD = new Tag("TBD") { id = 3 };
+        var urgent = new Tag() { Name = "Urgent", Id = 2 };
+        var TBD = new Tag() { Name = "TBD", Id = 3 };
         var listT = new List<Tag> { urgent, TBD };
 
 
@@ -99,7 +99,7 @@ public class TaskRepositoryTests : IDisposable
 
         //Should test this:
         //context.Tasks.Find(1).tags.Should().BeSameAs(listT);
-        context.Tasks.Find(1).tags.Count.Should().Be(listT.Count);
+        context.Tasks.Find(1).Tags.Count.Should().Be(listT.Count);
     }
 
     [Fact]
@@ -117,3 +117,4 @@ public class TaskRepositoryTests : IDisposable
         context.Dispose();
     }
 }
+
