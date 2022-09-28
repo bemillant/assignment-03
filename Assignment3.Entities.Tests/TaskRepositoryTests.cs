@@ -30,7 +30,7 @@ public class TaskRepositoryTests : IDisposable
         var task3 = new Task() { Title = "Go For A Run", Id = 3, State = State.Resolved };
         context.Tasks.AddRange(task1, task2, task3);
 
-        var user1 = new User("Brian") { Id = 1, Email = "br@itu.dk" };
+        var user1 = new User() { Name = "Brian", Id = 1, Email = "br@itu.dk" };
         context.Users.Add(user1);
 
         context.SaveChanges();
