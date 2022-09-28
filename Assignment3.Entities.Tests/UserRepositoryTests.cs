@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Assignment3.Entities.Tests;
 
-public class UserRepositoryTests
+public class UserRepositoryTests : IDisposable
 {
     private readonly KanbanContext _context;
     private readonly UserRepository _userRepository;
@@ -113,5 +113,10 @@ public class UserRepositoryTests
     public void Delete_force()
     {
         _userRepository.Delete(2, true).Should().Be(Response.Deleted);
+    }
+
+    public void Dispose()
+    {
+        _context.Dispose();
     }
 }
