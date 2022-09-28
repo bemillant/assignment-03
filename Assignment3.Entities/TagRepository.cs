@@ -16,7 +16,7 @@ public class TagRepository : ITagRepository
 
         if (entity is null)
         {
-            entity = new Tag {Name = tag.Name};
+            entity = new Tag { Name = tag.Name };
 
             _context.Tags.Add(entity);
             _context.SaveChanges();
@@ -38,7 +38,7 @@ public class TagRepository : ITagRepository
 
         if (entity is not null)
         {
-            if (entity.Tasks.Count > 0)
+            if (entity.Tasks is not null)
             {
                 if (!force)
                 {
@@ -69,8 +69,8 @@ public class TagRepository : ITagRepository
     public TagDTO Read(int tagId)
     {
         var tags = from t in _context.Tags
-            where t.Id == tagId
-            select new TagDTO(t.Id, t.Name);
+                   where t.Id == tagId
+                   select new TagDTO(t.Id, t.Name);
 
         return tags.FirstOrDefault();
     }
@@ -78,7 +78,7 @@ public class TagRepository : ITagRepository
     public IReadOnlyCollection<TagDTO> ReadAll()
     {
         var tags = from t in _context.Tags
-            select new TagDTO(t.Id, t.Name);
+                   select new TagDTO(t.Id, t.Name);
 
         return tags.ToList();
     }
