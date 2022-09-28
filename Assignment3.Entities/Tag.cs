@@ -10,4 +10,9 @@ public class Tag
     [StringLength(50)]
     public string name { get; set; }
     public ICollection<Task>? tasks { get; set; }
+
+    public Tag(string name)
+    {
+        this.name = name;
+    }
 }

@@ -3,6 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 public class KanbanContext : DbContext
 {
+
+    public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<Task> Tasks => Set<Task>();
+
+    public KanbanContext(DbContextOptions<KanbanContext> options) : base(options) { }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //Making the enum to string
@@ -20,7 +26,12 @@ public class KanbanContext : DbContext
             .IsRequired();
 
         modelBuilder.Entity<User>()
-            .Property(u => new { u.name, u.email })
+            .Property(u => u.name)
+            .HasMaxLength(100)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.email)
             .HasMaxLength(100)
             .IsRequired();
 
