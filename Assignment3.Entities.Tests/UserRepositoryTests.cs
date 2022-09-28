@@ -34,7 +34,7 @@ public class UserRepositoryTests
         var user = new UserCreateDTO("Create", "Create");
         var (resp, uid) = _userRepository.Create(user);
         resp.Should().Be(Response.Created);
-        uid.Should().Be(0);
+        uid.Should().Be(4);
     }
 
     [Fact]
@@ -51,9 +51,9 @@ public class UserRepositoryTests
     {
         var expected = new[]
         {
-            new UserDTO(0, "rafa", "rafa"),
-            new UserDTO(1, "jouj", "jouj"),
-            new UserDTO(2, "bemi", "bemi"),
+            new UserDTO(1, "rafa", "rafa"),
+            new UserDTO(2, "jouj", "jouj"),
+            new UserDTO(3, "bemi", "bemi"),
         };
         var actual = _userRepository.ReadAll();
         actual.Should().BeEquivalentTo(expected);
