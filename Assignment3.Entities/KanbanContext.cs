@@ -1,13 +1,13 @@
 namespace Assignment3.Entities;
-using Microsoft.EntityFrameworkCore;
 
 public class KanbanContext : DbContext
 {
+    public KanbanContext(DbContextOptions<KanbanContext> options) : base(options)
+    {
+    }
 
     public DbSet<Tag> Tags => Set<Tag>();
     public DbSet<Task> Tasks => Set<Task>();
-
-    public KanbanContext(DbContextOptions<KanbanContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -17,7 +17,7 @@ public class KanbanContext : DbContext
             .Property(e => e.state)
             .HasConversion(
                 s => s.ToString(),
-                s => (enumState)Enum.Parse(typeof(enumState), s));
+                s => (enumState) Enum.Parse(typeof(enumState), s));
 
         //Making title required and setting length to be max 100
         modelBuilder.Entity<Task>()
@@ -47,10 +47,5 @@ public class KanbanContext : DbContext
         modelBuilder.Entity<Tag>()
             .HasIndex(t => t.name)
             .IsUnique();
-
-
-
-
-
     }
 }

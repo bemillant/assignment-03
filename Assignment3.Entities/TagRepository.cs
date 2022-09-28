@@ -1,14 +1,7 @@
-using Assignment3.Core;
-
-
-
-
-
 namespace Assignment3.Entities;
 
 public class TagRepository : ITagRepository
 {
-
     private readonly KanbanContext context;
 
     public TagRepository(KanbanContext context)
@@ -34,6 +27,7 @@ public class TagRepository : ITagRepository
         {
             response = Response.Conflict;
         }
+
         return (response, entity.id);
     }
 
@@ -75,8 +69,8 @@ public class TagRepository : ITagRepository
     public TagDTO Read(int tagId)
     {
         var tags = from t in context.Tags
-                   where t.id == tagId
-                   select new TagDTO(t.id, t.name);
+            where t.id == tagId
+            select new TagDTO(t.id, t.name);
 
         return tags.FirstOrDefault();
     }
@@ -84,7 +78,7 @@ public class TagRepository : ITagRepository
     public IReadOnlyCollection<TagDTO> ReadAll()
     {
         var tags = from t in context.Tags
-                   select new TagDTO(t.id, t.name);
+            select new TagDTO(t.id, t.name);
 
         return tags.ToList();
     }
@@ -111,6 +105,5 @@ public class TagRepository : ITagRepository
         }
 
         return response;
-
     }
 }
