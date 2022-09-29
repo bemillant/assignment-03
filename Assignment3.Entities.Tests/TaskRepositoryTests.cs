@@ -30,7 +30,7 @@ public class TaskRepositoryTests : IDisposable
         var task3 = new Task() { Title = "Go For A Run", Id = 3, State = State.Resolved };
         context.Tasks.AddRange(task1, task2, task3);
 
-        var user1 = new User {Name = "Brian", Id = 1, Email = "br@itu.dk" };
+        var user1 = new User { Name = "Brian", Id = 1, Email = "br@itu.dk" };
         context.Users.Add(user1);
 
         context.SaveChanges();
@@ -47,7 +47,6 @@ public class TaskRepositoryTests : IDisposable
         var (response, taskId) = taskRep.Create(new TaskCreateDTO("test", 1, "test", ArraySegment<string>.Empty));
 
         response.Should().Be(Response.Created);
-
         var task = taskRep.Read(taskId);
 
         task.State.Should().Be(State.New);
@@ -112,8 +111,8 @@ public class TaskRepositoryTests : IDisposable
     {
 
         var list = new List<string> { "Urgent", "TBD" };
-        var urgent = new Tag() { Name = "Urgent", Id = 2 };
-        var TBD = new Tag() { Name = "TBD", Id = 3 };
+        var urgent = new Tag() { Name = "Urgent", Id = 2, Tasks = new List<Task> { context.Tasks.Find(1) } };
+        var TBD = new Tag() { Name = "TBD", Id = 3, Tasks = new List<Task> { context.Tasks.Find(1) } };
         var listT = new List<Tag> { urgent, TBD };
 
 
@@ -122,7 +121,7 @@ public class TaskRepositoryTests : IDisposable
         var resp = taskRep.Update(updateTask);
         resp.Should().Be(Response.Updated);
 
-        //Should test this:
+        //Should test for tags that also has their tasks correct:
         //context.Tasks.Find(1).tags.Should().BeSameAs(listT);
         context.Tasks.Find(1).Tags.Count.Should().Be(listT.Count);
     }

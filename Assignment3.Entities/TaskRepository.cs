@@ -16,7 +16,7 @@ public class TaskRepository : ITaskRepository
 
         if (entity is null)
         {
-            entity = new Task { Title = task.Title, State = State.New };
+            entity = new Task { Title = task.Title, State = State.New, Created = DateTime.UtcNow, AssignedTo = null, StateUpdated = DateTime.UtcNow };
 
             context.Tasks.Add(entity);
             context.SaveChanges();
@@ -57,32 +57,98 @@ public class TaskRepository : ITaskRepository
 
     public TaskDetailsDTO Read(int taskId)
     {
-        throw new NotImplementedException();
+        if (context.Tasks.Find(taskId) is not null)
+        {
+            var Id = context.Tasks.Find(taskId).Id;
+            var Title = context.Tasks.Find(taskId).Title;
+            var Desc = context.Tasks.Find(taskId).Description;
+            var Created = context.Tasks.Find(taskId).Created;
+            string Name = null;
+            if (context.Tasks.Find(taskId).AssignedTo is not null)
+            {
+                Name = context.Users.Find(context.Tasks.Find(taskId).AssignedTo.Id).Name;
+            }
+            List<string> list = null;
+            if (context.Tasks.Find(taskId).Tags is not null)
+            {
+                list = context.Tasks.Find(taskId).Tags.Select(t => t.Name).ToList();
+            }
+            var State = context.Tasks.Find(taskId).State;
+            var StateUp = context.Tasks.Find(taskId).StateUpdated;
+            Console.WriteLine("--------------------------");
+
+            return new TaskDetailsDTO(Id, Title, Desc, Created, Name, list, State, StateUp);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public IReadOnlyCollection<TaskDTO> ReadAll()
     {
-        throw new NotImplementedException();
+        var list = new List<TaskDTO>();
+        foreach (var task in context.Tasks)
+        {
+            list.Add(new TaskDTO(task.Id, task.Title, task.AssignedTo.Name, task.Tags.Select(t => t.Name).ToList(), task.State));
+        }
+        return list;
     }
 
     public IReadOnlyCollection<TaskDTO> ReadAllByState(State State)
     {
-        throw new NotImplementedException();
+        var list = new List<TaskDTO>();
+        foreach (var task in context.Tasks)
+        {
+            if (task.State == State)
+            {
+                list.Add(new TaskDTO(task.Id, task.Title, task.AssignedTo.Name, task.Tags.Select(t => t.Name).ToList(), task.State));
+            }
+        }
+        return list;
+
     }
 
     public IReadOnlyCollection<TaskDTO> ReadAllByTag(string tag)
     {
-        throw new NotImplementedException();
+        var list = new List<TaskDTO>();
+        foreach (var task in context.Tasks)
+        {
+            foreach (var t in task.Tags)
+            {
+                if (t.Name.Equals(tag))
+                {
+                    list.Add(new TaskDTO(task.Id, task.Title, task.AssignedTo.Name, task.Tags.Select(t => t.Name).ToList(), task.State));
+                }
+            }
+        }
+        return list;
     }
 
     public IReadOnlyCollection<TaskDTO> ReadAllByUser(int userId)
     {
-        throw new NotImplementedException();
+        var list = new List<TaskDTO>();
+        foreach (var task in context.Tasks)
+        {
+            if (task.AssignedTo.Id == userId)
+            {
+                list.Add(new TaskDTO(task.Id, task.Title, task.AssignedTo.Name, task.Tags.Select(t => t.Name).ToList(), task.State));
+            }
+        }
+        return list;
     }
 
     public IReadOnlyCollection<TaskDTO> ReadAllRemoved()
     {
-        throw new NotImplementedException();
+        var list = new List<TaskDTO>();
+        foreach (var task in context.Tasks)
+        {
+            if (task.State == State.Removed)
+            {
+                list.Add(new TaskDTO(task.Id, task.Title, task.AssignedTo.Name, task.Tags.Select(t => t.Name).ToList(), task.State));
+            }
+        }
+        return list;
     }
 
     public Response Update(TaskUpdateDTO task)
@@ -126,14 +192,12 @@ public class TaskRepository : ITaskRepository
 
             entity.State = task.State;
             entity.Title = task.Title;
+            entity.StateUpdated = DateTime.UtcNow;
             context.SaveChanges();
             response = Response.Updated;
         }
 
         return response;
-
-
-
 
     }
 }
