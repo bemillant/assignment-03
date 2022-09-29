@@ -75,7 +75,6 @@ public class TaskRepository : ITaskRepository
             }
             var State = context.Tasks.Find(taskId).State;
             var StateUp = context.Tasks.Find(taskId).StateUpdated;
-            Console.WriteLine("--------------------------");
 
             return new TaskDetailsDTO(Id, Title, Desc, Created, Name, list, State, StateUp);
         }
